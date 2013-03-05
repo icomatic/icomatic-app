@@ -1,0 +1,41 @@
+/* Will be compiled down to a single stylesheet with your sass files */
+.square {
+    width: 100%;
+    position: relative;
+}
+.square::before {
+    display: block;
+    padding-top: 100%;
+    content: ' ';
+}
+.square > svg {
+    position: absolute;
+    display: block;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+}
+body {
+    width: 100%;
+    height: 100%;
+}
+
+#steplist {
+    margin: 0 0 0 -26px;
+    padding: 0;
+}
+
+#steplist li {
+    border-radius: 3px;
+    color: #888;
+    padding: 6px 9px;
+}
+
+#steplist li.nav-header {
+    display: none;
+}
+
+#steplist > li.active {
+    color: #000;
+    background-color: #e0f0fa;
+}

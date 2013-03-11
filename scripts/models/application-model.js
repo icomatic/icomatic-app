@@ -3,12 +3,14 @@ defaults: {
     // upload, preview, or export
     state: 'upload',
     icons: null,
+    // emSquare, ascent, descent
     emSquare: 1000,
+    // font family, font id, font filename
     fontFamily: 'Icomatic',
     fontId: 'icomatic',
-    fontPath: 'font/icomatic.svg',
-    stylePath: 'styles.css',
-    fontClass: 'icomatic',
+    fontPath: 'icomatic',
+    //stylePath: 'styles.css',
+    //fontClass: 'icomatic',
     fontSVG: null,
     fontStyle: null
 },
@@ -33,13 +35,13 @@ generateFont: function() {
     }, this);
     var fontData = {
         fontFamily: this.get('fontFamily'),
-        fontPath: this.get('fontPath'),
+        fontPath: this.get('fontPath') + '.svg',
         fontId: this.get('fontId'),
         emSquare: this.get('emSquare'),
         glyphs: glyphs
     };
     var styleData = {
-        fontClass: this.get('fontClass')
+        fontClass: this.get('fontPath')
     };
     var font = FontUtils.createFont(fontData);
     var stylesheet = FontUtils.createStylesheet(fontData, styleData);
@@ -63,7 +65,7 @@ samplePage: function() {
     var html = [];
     html.push('<html>');
     html.push('<head>');
-    html.push('<link rel=\'stylesheet\' type=\'text/css\' href=\'' + this.get('stylePath') + '\'/>');
+    html.push('<link rel=\'stylesheet\' type=\'text/css\' href=\'' + this.get('fontPath') + '.css' + '\'/>');
     html.push("<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700' rel='stylesheet' type='text/css'>");
     html.push("<link href='http://fonts.googleapis.com/css?family=Source+Code+Pro' rel='stylesheet' type='text/css'>");
     html.push('<style>');
@@ -90,19 +92,19 @@ samplePage: function() {
     html.push('<h1>Ligature Icon Font</h1>');
     html.push('Try typing one of your icon ligatures in the area below.');
     html.push('eg "' + this.get('icons').at(0).get('name') + '"');
-    html.push('<div contenteditable class=\'' + this.get('fontClass') + ' demo\'></div>');
+    html.push('<div contenteditable class=\'' + this.get('fontPath') + ' demo\'></div>');
     html.push('<h2>Icon Font Usage</h2>');
     html.push('Using an icon font is simple. Just include the stylesheet, and add the icon class to any text you would like to be replaced with an icon.');
     html.push('<code><pre>');
-    html.push('&lt;link rel=\'stylesheet\' type=\'text/css\' href=\'' + this.get('stylePath') + '\'/&gt;');
+    html.push('&lt;link rel=\'stylesheet\' type=\'text/css\' href=\'' + this.get('fontPath') + '.css' + '\'/&gt;');
     html.push('...');
-    html.push('&lt;span class=\'' + this.get('fontClass') + '\' style=\'color:blue\'&gt;' + this.get('icons').at(0).get('name') + '&lt;/span&gt;');
+    html.push('&lt;span class=\'' + this.get('fontPath') + '\' style=\'color:blue\'&gt;' + this.get('icons').at(0).get('name') + '&lt;/span&gt;');
     html.push('</pre></code>');
     html.push('<h2>Available Icons</h2>');
     var thumbnails = this.get('icons').map(function(iconModel) {
         var thumbnail = [];
         thumbnail.push('<tr>');
-        thumbnail.push('<td class=\'' + this.get('fontClass') + '\'>');
+        thumbnail.push('<td class=\'' + this.get('fontPath') + '\'>');
         thumbnail.push(iconModel.get('name'));
         thumbnail.push('</td>');
         thumbnail.push('<td>');

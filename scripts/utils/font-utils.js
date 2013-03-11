@@ -16,8 +16,8 @@ createFont: function(fontData) { /* fontId, fontFamily, emSquare, glyphs: [{d, u
     var fontFace = font.appendChild(document.createElementNS(svgNS, 'font-face'));
     fontFace.setAttribute('font-family', fontData.fontFamily)
     fontFace.setAttribute('units-per-em', fontData.emSquare)
-    fontFace.setAttribute('ascent', fontData.emSquare)
-    fontFace.setAttribute('descent', 0);
+    fontFace.setAttribute('ascent', fontData.emSquare * .8)
+    fontFace.setAttribute('descent', fontData.emSquare * .2);
     
     var glyphs = fontData.glyphs.map(FontUtils.createGlyph);
     glyphs.reduce(function(font, glyph) { font.appendChild(glyph); return font; }, font);

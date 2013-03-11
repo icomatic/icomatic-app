@@ -51,13 +51,13 @@ render: function() {
         break;
     case 'export':
         var style = document.createElement('style');
-        style.innerText = this.model.get('fontStyle').replace(this.model.get('fontPath'), '');
+        style.innerText = this.model.get('fontStyle').replace(this.model.get('fontPath') + '.svg', '');
         document.querySelector('head').appendChild(style);
         var svg = document.createElement('div');
         svg.innerHTML = this.model.get('fontSVG');
         document.body.appendChild(svg);
         var p = document.createElement('p');
-        p.setAttribute('class', this.model.get('fontClass'));
+        p.setAttribute('class', this.model.get('fontPath'));
         p.setAttribute('style', 'font-size: 50px');
         p.innerText = this.model.get('icons').pluck('name').join(' ');
         div.appendChild(p);
@@ -66,8 +66,31 @@ render: function() {
         button.innerText = 'Download';
         button.setAttribute('class', 'btn');
         div.appendChild(button);
+        var form = this.createForm([
+            { name: 'name', value: this.model.get('fontFamily') },
+            { name: 'path', value: this.model.get('fontPath') },
+            { name: 'fontData', value: this.model.get('fontSVG') },
+            { name: 'styleData', value: this.model.get('fontStyle') },
+            { name: 'sampleData', value: this.model.samplePage() }
+            ]);
+        div.appendChild(form);
     }
     return this;
+},
+createForm: function(values /*[{ name, value }]*/) {
+    var form = document.createElement('form');
+    form.setAttribute('id', 'form');
+    form.setAttribute('enctype', 'application/x-ww-form-urlencoded');
+    form.setAttribute('action', 'http://server.icomatic.io/icon-handler');
+    form.setAttribute('method', 'post');
+    values.map(function(value) {
+        var input = document.createElement('input');
+        input.setAttribute('type', 'hidden');
+        input.setAttribute('name', value.name);
+        input.setAttribute('value', value.value);
+        form.appendChild(input);
+    });
+    return form;
 },
 clickHandler: function(event) {
     switch(this.model.get('state')) {
@@ -75,7 +98,9 @@ clickHandler: function(event) {
             this.model.generateFont();
             break;
         case 'export':
-            this.model.downloadFont();
+            var form = document.getElementById('form');
+            form.submit();
+            //this.model.downloadFont();
             break;
     }
 },

@@ -10,44 +10,49 @@ initialize: function() {
     // check this
     model.on('change', this.render, this);
 },
+template: _.template(
+"<div class='row-fluid' style='margin-top:2em'>\
+  <div class='span3'>\
+    <ol id='steplist' class='nav nav-list'>\
+        <li class='<% print(state === 'upload' ? 'active' : '') %>'>1. Upload Your Vector Icons</li>\
+        <li class='<% print(state === 'preview' ? 'active' : '') %>'>2. Preview Icons</li>\
+        <li class='<% print(state === 'export' ? 'active' : '') %>'>3. Download Your Icon Font</li>\
+    </ol>\
+  </div>\
+  <div class=\'span9\'>\
+  </div>\
+</div>"
+),
+uploadTemplate: _.template(
+"<div style='position:relative' class='btn btn-large'>\
+  Upload Files...\
+  <input type='file' name='files[]' id='picker' multiple style='position:absolute;top:0;left:0;right:0;bottom:0;-webkit-opacity:0;-moz-opacity:0;opacity:0>\
+</div>"
+),
+exportTemplate: _.template(
+"<p class='<%= fontPath %>' style='font-size: 50px'>\
+  <%= icons %>\
+</p>\
+<button id='button' class='btn'>Download</button>\
+<form id='form' enctype='application/x-www-form-urlencoded' action='http://server.icomatic.io/icon-handler' method='post'>\
+  <% _.forEach(inputs, function(input) { %><input type='hidden' name='<%=input.name%>' value='<%-input.value%>'><% });%>\
+</form>"
+),
+previewTemplate: _.template("<button id='button' class='btn btn-large'>Next</button>"),
 render: function() {
-    this.el.innerHTML = '<div class=\'row-fluid\' style=\'margin-top:2em\'><div class=\'span3\'></div><div class=\'span9\'></div></div>';
-    var picker, iconsView, button, div, state;
-    state = this.model.get('state');
-    div = this.el.querySelector('.span3');
-    var content = [];
-    content.push('<ol id=\'steplist\' class=\'nav nav-list\'>');
-    content.push('    <li class=\'nav-header\'>3 Easy Steps</li>');
-    content.push('    <li' + (state === 'upload' ? ' class=\'active\'' : '') + '>1. Upload Your Vector Icons</li>');
-    content.push('    <li' + (state === 'preview' ? ' class=\'active\'' : '') + '>2. Preview Icons</li>');
-    content.push('    <li' + (state === 'export' ? ' class=\'active\'' : '') + '>3. Download Your Icon Font</li>');
-    content.push('</ol>');
-    div.innerHTML = content.join('\n');
+    this.el.innerHTML = this.template({ state: this.model.get('state') });
+    var result, iconsView,
     div = this.el.querySelector('.span9');
     switch(this.model.get('state')) {
     case 'upload':
-        div = div.appendChild(document.createElement('div'));
-        div.style.setProperty('position', 'relative');
-        div.setAttribute('class', 'btn btn-large');
-        div.innerText = 'Upload Files…';
-
-        picker = document.createElement('input');
-        picker.setAttribute('type', 'file');
-        picker.setAttribute('name', 'files[]');
-        picker.setAttribute('id', 'picker');
-        picker.setAttribute('multiple', 'multiple');
-        picker.setAttribute('style', 'position:absolute;top:0;left:0;bottom:0;right:0;-webkit-opacity:0');
-        div.appendChild(picker);
+        result = this.uploadTemplate({});
+        div.innerHTML = result;
         break;
     case 'preview':
-        if (!iconsView)
-            iconsView = new icomatic.Views.IconCollectionView({ collection: this.model.get('icons') });
-        div.appendChild(iconsView.render().el);
-        button = document.createElement('button');
-        button.setAttribute('id', 'button');
-        button.innerText = 'Next';
-        button.setAttribute('class', 'btn btn-large');
-        div.appendChild(button);
+        result = this.previewTemplate({});
+        div.innerHTML = result;
+        iconsView = new icomatic.Views.IconCollectionView({ collection: this.model.get('icons') });
+        div.insertBefore(iconsView.render().el, div.firstChild);
         break;
     case 'export':
         var style = document.createElement('style');
@@ -56,24 +61,19 @@ render: function() {
         var svg = document.createElement('div');
         svg.innerHTML = this.model.get('fontSVG');
         document.body.appendChild(svg);
-        var p = document.createElement('p');
-        p.setAttribute('class', this.model.get('fontPath'));
-        p.setAttribute('style', 'font-size: 50px');
-        p.innerText = this.model.get('icons').pluck('name').join(' ');
-        div.appendChild(p);
-        button = document.createElement('button');
-        button.setAttribute('id', 'button');
-        button.innerText = 'Download';
-        button.setAttribute('class', 'btn');
-        div.appendChild(button);
-        var form = this.createForm([
+        var inputs = [
             { name: 'name', value: this.model.get('fontFamily') },
             { name: 'path', value: this.model.get('fontPath') },
             { name: 'fontData', value: this.model.get('fontSVG') },
             { name: 'styleData', value: this.model.get('fontStyle') },
             { name: 'sampleData', value: this.model.samplePage() }
-            ]);
-        div.appendChild(form);
+            ];
+        result = this.exportTemplate({
+            fontPath: this.model.get('fontPath'),
+            icons: this.model.get('icons').pluck('name').join(' '),
+            inputs: inputs
+        });
+        div.innerHTML= result;
     }
     return this;
 },

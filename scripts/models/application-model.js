@@ -35,7 +35,7 @@ generateFont: function() {
     }, this);
     var fontData = {
         fontFamily: this.get('fontFamily'),
-        fontPath: this.get('fontPath') + '.svg',
+        fontPath: this.get('fontPath'),
         fontId: this.get('fontId'),
         emSquare: this.get('emSquare'),
         glyphs: glyphs

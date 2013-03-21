@@ -35,7 +35,7 @@ createGlyph: function(glyphData) {
 createStylesheet: function(fontData, styleData) {
     return '@font-face {\
     font-family: \'' + fontData.fontFamily + '\';\
-    src: url(\'' + fontData.fontPath + '#' + fontData.fontId + '\') format(\'svg\');\
+    src: url(\'' + fontData.fontPath + '.svg#' + fontData.fontId + '\') format(\'svg\');\
     }\
     .' + styleData.fontClass + ' {\
     font-family: \'' + fontData.fontFamily + '\',\'sans-serif\';\

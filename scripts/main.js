@@ -31,7 +31,10 @@ $(document).ready(function(){
   
   if (debug === 'preview')
     application.set('state', 'preview');
-  else
+  else if (debug === 'export') {
     application.generateFont();
+    application.set('state', 'export');
+  } else
+    application.set('state', 'purchase');
 
 });

@@ -47,7 +47,6 @@ generateFont: function() {
     var stylesheet = FontUtils.createStylesheet(fontData, styleData);
     this.set('fontSVG', font);
     this.set('fontStyle', stylesheet);
-    this.set('state', 'export');
 },
 downloadFont: function() {
     var zip = new JSZip();
@@ -61,65 +60,57 @@ downloadFont: function() {
     var content = zip.generate();
     location.href = 'data:application/zip;base64,' + content;
 },
+sampleTemplate: _.template(
+"<html>\
+<head>\
+<link rel='stylesheet' type='text/css' href='<% print(fontPath + '.css') %>' />\
+<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700' rel='stylesheet' type='text/css'>\
+<link href='http://fonts.googleapis.com/css?family=Source+Code+Pro' rel='stylesheet' type='text/css'>\
+<style>\
+body {\
+  font-family: 'Source Sans Pro', Arial, sans-serif;\
+  color: DimGray;\
+}\
+body code, body pre {\
+    background-color: DimGray;\
+    color: white;\
+    font-family: 'Source Code Pro', monospace;\
+}\
+.demo {\
+    border: 1px solid DimGray;\
+    font-size: 1.5em;\
+    line-height: 1.5;\
+    font-family: '<%= fontFamily %>';\
+}\
+tr:nth-child(odd) { background-color: DimGray; color: white; }\
+tr:nth-child(even) { background-color: white; color: DimGray; }\
+</style>\
+<body>\
+<h1>Ligature Icon Font</h1>\
+Try typing one of your icon ligatures in the area below.\
+eg <% icons.at(0).get('name') %>\
+<div contenteditable class='<%= fontPath %> demo'></div>\
+<h2>Icon Font Usage</h2>\
+Using an icon font is simple. Just include the stylesheet, and the icon class to any text you would like to be replaced with an icon.\
+<code><pre>\
+<link rel='stylesheet' type='text/css' href='<%= fontPath %>.css'>\
+...\
+<span class='<%= fontPath %>' style='color:blue'><%= icons.at(0).get('name') %></span>\
+</pre></code>\
+<h2>Available Icons</h2>\
+<table>\
+    <% icons.each(function(icon) { %><tr><td class='<%= fontPath %>'><%= icon.get('name') %></td></tr><% }); %>\
+</table>\
+</body>\
+</html>"
+),
 samplePage: function() {
-    var html = [];
-    html.push('<html>');
-    html.push('<head>');
-    html.push('<link rel=\'stylesheet\' type=\'text/css\' href=\'' + this.get('fontPath') + '.css' + '\'/>');
-    html.push("<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700' rel='stylesheet' type='text/css'>");
-    html.push("<link href='http://fonts.googleapis.com/css?family=Source+Code+Pro' rel='stylesheet' type='text/css'>");
-    html.push('<style>');
-    html.push('body {');
-    html.push('    font-family: "Source Sans Pro", Arial, sans-serif;');
-    html.push('    color: DimGray;')
-    html.push('}');
-    html.push('body code, body pre {');
-    html.push('    background-color: DimGray;');
-    html.push('    color: white;');
-    html.push('    font-family: "Source Code Pro", monospace;');
-    html.push('}');
-    html.push('.demo {');
-    html.push('    border: 1px solid DimGray;');
-    html.push('    font-size: 1.5em;');
-    html.push('    line-height: 1.5;');
-    html.push('    font-family: ' + this.get('fontFamily') + ';');
-    html.push('}');
-    html.push('tr:nth-child(odd) { background-color: DimGray; color: white;');
-    html.push('tr:nth-child(even) { background-color: white; color: DimGray;');
-    html.push('</style>');
-    html.push('</head>');
-    html.push('<body>');
-    html.push('<h1>Ligature Icon Font</h1>');
-    html.push('Try typing one of your icon ligatures in the area below.');
-    html.push('eg "' + this.get('icons').at(0).get('name') + '"');
-    html.push('<div contenteditable class=\'' + this.get('fontPath') + ' demo\'></div>');
-    html.push('<h2>Icon Font Usage</h2>');
-    html.push('Using an icon font is simple. Just include the stylesheet, and add the icon class to any text you would like to be replaced with an icon.');
-    html.push('<code><pre>');
-    html.push('&lt;link rel=\'stylesheet\' type=\'text/css\' href=\'' + this.get('fontPath') + '.css' + '\'/&gt;');
-    html.push('...');
-    html.push('&lt;span class=\'' + this.get('fontPath') + '\' style=\'color:blue\'&gt;' + this.get('icons').at(0).get('name') + '&lt;/span&gt;');
-    html.push('</pre></code>');
-    html.push('<h2>Available Icons</h2>');
-    var thumbnails = this.get('icons').map(function(iconModel) {
-        var thumbnail = [];
-        thumbnail.push('<tr>');
-        thumbnail.push('<td class=\'' + this.get('fontPath') + '\'>');
-        thumbnail.push(iconModel.get('name'));
-        thumbnail.push('</td>');
-        thumbnail.push('<td>');
-        thumbnail.push(iconModel.get('name'));
-        thumbnail.push('</td>');
-        thumbnail.push('</tr>');
-        return thumbnail.join('\n');
-    }, this);
-    thumbnails = thumbnails.join('\n');
-    html.push('<table>');
-    html.push(thumbnails);
-    html.push('</table>');
-    html.push('</body>');
-    html.push('</html>');
-    return html.join('\n');
+    var result = this.sampleTemplate({
+        fontPath: this.get('fontPath'),
+        fontFamily: this.get('fontFamily'),
+        icons: this.get('icons')
+    });
+    return result;
 },
 addIcon: function(fileName, svgContent) {
     fileName = fileName.replace(/\.\S+$/, '');

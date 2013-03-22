@@ -17,6 +17,7 @@ template: _.template(
         <li class='<% print(state === 'upload' ? 'active' : '') %>'>1. Upload Your Vector Icons</li>\
         <li class='<% print(state === 'preview' ? 'active' : '') %>'>2. Preview Icons</li>\
         <li class='<% print(state === 'export' ? 'active' : '') %>'>3. Download Your Icon Font</li>\
+        <li class='<% print(state === 'purchase' ? 'active' : '') %>'>4. Purchase It</li>\
     </ol>\
   </div>\
   <div class=\'span9\'>\
@@ -31,7 +32,7 @@ uploadTemplate: _.template(
 ),
 exportTemplate: _.template(
 "<p class='<%= fontPath %>' style='font-size: 50px'>\
-  <%= icons %>\
+  <% icons.each(function(icon) { %> <%= icon.get('name') %> <% }); %>\
 </p>\
 <button id='button' class='btn'>Download</button>\
 <form id='form' enctype='application/x-www-form-urlencoded' action='http://server.icomatic.io/icon-handler' method='post'>\
@@ -39,6 +40,18 @@ exportTemplate: _.template(
 </form>"
 ),
 previewTemplate: _.template("<button id='button' class='btn btn-large'>Next</button>"),
+purchaseTemplate: _.template(
+"<h2>Thanks for trying us out!</h2>\
+<p>Feel free to try out the test SVG font. For our beta testers interested in a full font kit\
+(with .eot, .woff, and .ttf formats), you can use the PayPal link below and then send your\
+SVG font in to us at icomaticsf[at]gmail.com.</p><br/>\
+<form action='https://www.paypal.com/cgi-bin/webscr' method='post' target='_top'>\
+    <input type='hidden' name='cmd' value='_s-xclick'>\
+    <input type='hidden' name='hosted_button_id' value='P2VQH6ZJQ3KSU'>\
+    <input type='image' src='https://www.paypalobjects.com/en_US/i/btn/btn_buynowCC_LG.gif' border='0' name='submit' alt='PayPal - The safer, easier way to pay online!'>\
+    <img alt='' border='0' src='https://www.paypalobjects.com/en_US/i/scr/pixel.gif' width='1' height='1'>\
+</form>"
+),
 render: function() {
     this.el.innerHTML = this.template({ state: this.model.get('state') });
     var result, iconsView,
@@ -70,10 +83,15 @@ render: function() {
             ];
         result = this.exportTemplate({
             fontPath: this.model.get('fontPath'),
-            icons: this.model.get('icons').pluck('name').join(' '),
+            icons: this.model.get('icons'),
             inputs: inputs
         });
         div.innerHTML= result;
+        break;
+    case 'purchase':
+        result = this.purchaseTemplate({});
+        div.innerHTML = result;
+        break;
     }
     return this;
 },
@@ -96,10 +114,12 @@ clickHandler: function(event) {
     switch(this.model.get('state')) {
         case 'preview':
             this.model.generateFont();
+            this.model.set('state', 'export');
             break;
         case 'export':
             var form = document.getElementById('form');
             form.submit();
+            this.model.set('state', 'purchase');
             //this.model.downloadFont();
             break;
     }

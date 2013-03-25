@@ -27,7 +27,7 @@ template: _.template(
 uploadTemplate: _.template(
 "<div style='position:relative' class='btn btn-large'>\
   Upload Files...\
-  <input type='file' name='files[]' id='picker' multiple style='position:absolute;top:0;left:0;right:0;bottom:0;-webkit-opacity:0;-moz-opacity:0;opacity:0>\
+  <input type='file' name='files[]' id='picker' multiple style='position:absolute;top:0;left:0;right:0;bottom:0;-webkit-opacity:0;-moz-opacity:0;opacity:0'>\
 </div>"
 ),
 exportTemplate: _.template(

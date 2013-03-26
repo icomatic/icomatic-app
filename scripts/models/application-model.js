@@ -12,7 +12,9 @@ defaults: {
     //stylePath: 'styles.css',
     //fontClass: 'icomatic',
     fontSVG: null,
-    fontStyle: null
+    fontStyle: null,
+    fontScript: null,
+    altClass: 'icomatic-alt'
 },
 initialize: function() {
     this.set('icons', new icomatic.Collections.IconCollection([]));
@@ -33,20 +35,35 @@ generateFont: function() {
             d: d
         };
     }, this);
+    var fallbacks = [];
+    //PUA: U+E000–U+F8FF
+    var fallback = parseInt('0xe000');
+    _.map(glyphs, function(glyph) {
+        if (glyph.unicode.length > 1)
+            fallbacks.push({
+                unicode: '&#x' + fallback.toString(16),
+                d: glyph.d,
+                from: glyph.unicode
+            });
+    });
     var fontData = {
         fontFamily: this.get('fontFamily'),
         fontPath: this.get('fontPath'),
         fontId: this.get('fontId'),
         emSquare: this.get('emSquare'),
-        glyphs: glyphs
+        glyphs: glyphs,
+        fallbacks: fallbacks
     };
     var styleData = {
-        fontClass: this.get('fontPath')
+        fontClass: this.get('fontPath'),
+        altClass: this.get('altClass')
     };
     var font = FontUtils.createFont(fontData);
     var stylesheet = FontUtils.createStylesheet(fontData, styleData);
+    var script = FontUtils.createScript(fontData);
     this.set('fontSVG', font);
     this.set('fontStyle', stylesheet);
+    this.set('fontScript', script);
 },
 downloadFont: function() {
     var zip = new JSZip();

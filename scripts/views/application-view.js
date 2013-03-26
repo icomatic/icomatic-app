@@ -25,9 +25,11 @@ template: _.template(
 </div>"
 ),
 uploadTemplate: _.template(
-"<div style='position:relative' class='btn btn-large'>\
+"<h2>Ready to get started?</h2>\
+<p>Upload some svg files. Their filenames will be used to generate your font ligatures.</p>\
+<div style='position:relative' class='btn btn-large'>\
   Upload Files...\
-  <input type='file' name='files[]' id='picker' multiple style='position:absolute;top:0;left:0;right:0;bottom:0;-webkit-opacity:0;-moz-opacity:0;opacity:0>\
+  <input type='file' name='files[]' id='picker' multiple style='position:absolute;top:0;left:0;right:0;bottom:0;-webkit-opacity:0;-moz-opacity:0;opacity:0'>\
 </div>"
 ),
 exportTemplate: _.template(
@@ -92,6 +94,19 @@ render: function() {
         result = this.purchaseTemplate({});
         div.innerHTML = result;
         break;
+    case 'sample':
+        var iframe = document.createElement('iframe');
+        iframe.style.setProperty('width', '100%');
+        div.appendChild(iframe);
+        var doc = iframe.contentDocument || iframe.contentWindow.document;
+        doc.write(this.model.samplePage());
+        var style = doc.createElement('style');
+        style.innerText = this.model.get('fontStyle').replace(this.model.get('fontPath') + '.svg', '');
+        doc.querySelector('head').appendChild(style);
+        var svg = doc.createElement('div');
+        svg.innerHTML = this.model.get('fontSVG');
+        doc.body.appendChild(svg);
+        break;
     }
     return this;
 },
@@ -117,10 +132,10 @@ clickHandler: function(event) {
             this.model.set('state', 'export');
             break;
         case 'export':
-            var form = document.getElementById('form');
-            form.submit();
+            // var form = document.getElementById('form');
+            // form.submit();
+            this.model.downloadFont();
             this.model.set('state', 'purchase');
-            //this.model.downloadFont();
             break;
     }
 },

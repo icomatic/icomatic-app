@@ -68,12 +68,13 @@ generateFont: function() {
 downloadFont: function() {
     var zip = new JSZip();
     zip.file('index.html', this.samplePage());
-    zip.file(this.get('stylePath'), this.get('fontStyle'));
-    var fontPath = this.get('fontPath').split('/');
-    var folder = zip;
-    for (var i = 0; i < fontPath.length - 1; i++)
-        folder = folder.folder(fontPath[i]);
-    folder.file(fontPath[fontPath.length - 1], this.get('fontSVG'));
+    zip.file(this.get('fontPath') + '.css', this.get('fontStyle'));
+    // var fontPath = this.get('fontPath').split('/');
+    // var folder = zip;
+    // for (var i = 0; i < fontPath.length - 1; i++)
+    //     folder = folder.folder(fontPath[i]);
+    // folder.file(fontPath[fontPath.length - 1], this.get('fontSVG'));
+    zip.file(this.get('fontPath') + '.svg', this.get('fontSVG'));
     var content = zip.generate();
     location.href = 'data:application/zip;base64,' + content;
 },
@@ -102,6 +103,7 @@ body code, body pre {\
 tr:nth-child(odd) { background-color: DimGray; color: white; }\
 tr:nth-child(even) { background-color: white; color: DimGray; }\
 </style>\
+</head>\
 <body>\
 <h1>Ligature Icon Font</h1>\
 Try typing one of your icon ligatures in the area below.\
@@ -110,13 +112,16 @@ eg <% icons.at(0).get('name') %>\
 <h2>Icon Font Usage</h2>\
 Using an icon font is simple. Just include the stylesheet, and the icon class to any text you would like to be replaced with an icon.\
 <code><pre>\
-<link rel='stylesheet' type='text/css' href='<%= fontPath %>.css'>\
-...\
-<span class='<%= fontPath %>' style='color:blue'><%= icons.at(0).get('name') %></span>\
+&lt;link rel='stylesheet' type='text/css' href='<%= fontPath %>.css'&gt;<br/>\
+...<br/>\
+&lt;span class='<%= fontPath %>' style='color:blue'&gt;<%= icons.at(0).get('name') %>&lt;/span&gt;<br/>\
 </pre></code>\
 <h2>Available Icons</h2>\
 <table>\
-    <% icons.each(function(icon) { %><tr><td class='<%= fontPath %>'><%= icon.get('name') %></td></tr><% }); %>\
+    <% icons.each(function(icon) { %><tr>\
+        <td class='<%= fontPath %>'><%= icon.get('name') %></td>\
+        <td><%= icon.get('name') %></td>\
+    </tr><% }); %>\
 </table>\
 </body>\
 </html>"

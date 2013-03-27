@@ -50,7 +50,7 @@ SVG font in to us at icomaticsf[at]gmail.com.</p><br/>\
 <form action='https://www.paypal.com/cgi-bin/webscr' method='post' target='_top' onsubmit='_gaq.push([\"_trackEvent\", \"PurchaseFont\"])'>\
     <input type='hidden' name='cmd' value='_s-xclick'>\
     <input type='hidden' name='hosted_button_id' value='P2VQH6ZJQ3KSU'>\
-    <input type='image' src='https://www.paypalobjects.com/en_US/i/btn/btn_buynowCC_LG.gif' border='0' name='submit' alt='PayPal - The safer, easier way to pay online!'>\
+    <input type='image' src='http://app.icomatic.io/resources/paypal-btn.gif' border='0' name='submit' alt='PayPal - The safer, easier way to pay online!'>\
     <img alt='' border='0' src='https://www.paypalobjects.com/en_US/i/scr/pixel.gif' width='1' height='1'>\
 </form>"
 ),
@@ -100,9 +100,15 @@ render: function() {
         div.appendChild(iframe);
         var doc = iframe.contentDocument || iframe.contentWindow.document;
         doc.write(this.model.samplePage());
+
         var style = doc.createElement('style');
-        style.innerText = this.model.get('fontStyle').replace(this.model.get('fontPath') + '.svg', '');
+        style.innerHTML = this.model.get('fontStyle').replace(this.model.get('fontPath') + '.svg', '');
         doc.querySelector('head').appendChild(style);
+
+        var script = doc.createElement('script');
+        script.innerHTML = this.model.get('fontScript');
+        doc.querySelector('head').appendChild(script);
+
         var svg = doc.createElement('div');
         svg.innerHTML = this.model.get('fontSVG');
         doc.body.appendChild(svg);

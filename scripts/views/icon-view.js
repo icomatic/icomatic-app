@@ -2,8 +2,8 @@ icomatic.Views.IconView = Backbone.View.extend({
 template: _.template(
 '<div class=\'square thumbnail\'>\
   <%= svg %>\
-  <p><%= name %></p>\
-</div>'
+</div>\
+<p><%= name %></p>'
 ),
 tagName: 'li',
 className: 'span2',

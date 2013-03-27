@@ -100,9 +100,15 @@ render: function() {
         div.appendChild(iframe);
         var doc = iframe.contentDocument || iframe.contentWindow.document;
         doc.write(this.model.samplePage());
+
         var style = doc.createElement('style');
-        style.innerText = this.model.get('fontStyle').replace(this.model.get('fontPath') + '.svg', '');
+        style.innerHTML = this.model.get('fontStyle').replace(this.model.get('fontPath') + '.svg', '');
         doc.querySelector('head').appendChild(style);
+
+        var script = doc.createElement('script');
+        script.innerHTML = this.model.get('fontScript');
+        doc.querySelector('head').appendChild(script);
+
         var svg = doc.createElement('div');
         svg.innerHTML = this.model.get('fontSVG');
         doc.body.appendChild(svg);

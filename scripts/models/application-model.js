@@ -41,7 +41,7 @@ generateFont: function() {
     _.map(glyphs, function(glyph) {
         if (glyph.unicode.length > 1)
             fallbacks.push({
-                unicode: '&#x' + fallback.toString(16),
+                unicode: '&#x' + (fallback++).toString(16) + ';',
                 d: glyph.d,
                 from: glyph.unicode
             });
@@ -60,7 +60,7 @@ generateFont: function() {
     };
     var font = FontUtils.createFont(fontData);
     var stylesheet = FontUtils.createStylesheet(fontData, styleData);
-    var script = FontUtils.createScript(fontData);
+    var script = FontUtils.createScript(fontData, styleData);
     this.set('fontSVG', font);
     this.set('fontStyle', stylesheet);
     this.set('fontScript', script);
@@ -69,6 +69,7 @@ downloadFont: function() {
     var zip = new JSZip();
     zip.file('index.html', this.samplePage());
     zip.file(this.get('fontPath') + '.css', this.get('fontStyle'));
+    zip.file(this.get('fontPath') + '.js', this.get('fontScript'));
     // var fontPath = this.get('fontPath').split('/');
     // var folder = zip;
     // for (var i = 0; i < fontPath.length - 1; i++)
@@ -79,51 +80,52 @@ downloadFont: function() {
     location.href = 'data:application/zip;base64,' + content;
 },
 sampleTemplate: _.template(
-"<html>\
-<head>\
-<link rel='stylesheet' type='text/css' href='<% print(fontPath + '.css') %>' />\
-<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700' rel='stylesheet' type='text/css'>\
-<link href='http://fonts.googleapis.com/css?family=Source+Code+Pro' rel='stylesheet' type='text/css'>\
-<style>\
-body {\
-  font-family: 'Source Sans Pro', Arial, sans-serif;\
-  color: DimGray;\
-}\
-body code, body pre {\
-    background-color: DimGray;\
-    color: white;\
-    font-family: 'Source Code Pro', monospace;\
-}\
-.demo {\
-    border: 1px solid DimGray;\
-    font-size: 1.5em;\
-    line-height: 1.5;\
-    font-family: '<%= fontFamily %>';\
-}\
-tr:nth-child(odd) { background-color: DimGray; color: white; }\
-tr:nth-child(even) { background-color: white; color: DimGray; }\
-</style>\
-</head>\
-<body>\
-<h1>Ligature Icon Font</h1>\
-Try typing one of your icon ligatures in the area below.\
-eg <% icons.at(0).get('name') %>\
-<div contenteditable class='<%= fontPath %> demo'></div>\
-<h2>Icon Font Usage</h2>\
-Using an icon font is simple. Just include the stylesheet, and the icon class to any text you would like to be replaced with an icon.\
-<code><pre>\
-&lt;link rel='stylesheet' type='text/css' href='<%= fontPath %>.css'&gt;<br/>\
-...<br/>\
-&lt;span class='<%= fontPath %>' style='color:blue'&gt;<%= icons.at(0).get('name') %>&lt;/span&gt;<br/>\
-</pre></code>\
-<h2>Available Icons</h2>\
-<table>\
-    <% icons.each(function(icon) { %><tr>\
-        <td class='<%= fontPath %>'><%= icon.get('name') %></td>\
-        <td><%= icon.get('name') %></td>\
-    </tr><% }); %>\
-</table>\
-</body>\
+"<html>\n\
+<head>\n\
+<link rel='stylesheet' type='text/css' href='<% print(fontPath + '.css') %>' />\n\
+<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700' rel='stylesheet' type='text/css'>\n\
+<link href='http://fonts.googleapis.com/css?family=Source+Code+Pro' rel='stylesheet' type='text/css'>\n\
+<script src='<%= fontPath %>.js'></script>\n\
+<style>\n\
+body {\n\
+  font-family: 'Source Sans Pro', Arial, sans-serif;\n\
+  color: DimGray;\n\
+}\n\
+body code, body pre {\n\
+    background-color: DimGray;\n\
+    color: white;\n\
+    font-family: 'Source Code Pro', monospace;\n\
+}\n\
+.demo {\n\
+    border: 1px solid DimGray;\n\
+    font-size: 1.5em;\n\
+    line-height: 1.5;\n\
+    font-family: '<%= fontFamily %>';\n\
+}\n\
+tr:nth-child(odd) { background-color: DimGray; color: white; }\n\
+tr:nth-child(even) { background-color: white; color: DimGray; }\n\
+</style>\n\
+</head>\n\
+<body>\n\
+<h1>Ligature Icon Font</h1>\n\
+Try typing one of your icon ligatures in the area below.\n\
+eg <% icons.at(0).get('name') %>\n\
+<div contenteditable class='<%= fontPath %> demo'></div>\n\
+<h2>Icon Font Usage</h2>\n\
+Using an icon font is simple. Just include the stylesheet, and the icon class to any text you would like to be replaced with an icon.\n\
+<code><pre>\n\
+&lt;link rel='stylesheet' type='text/css' href='<%= fontPath %>.css'&gt;<br/>\n\
+...<br/>\n\
+&lt;span class='<%= fontPath %>' style='color:blue'&gt;<%= icons.at(0).get('name') %>&lt;/span&gt;<br/>\n\
+</pre></code>\n\
+<h2>Available Icons</h2>\n\
+<table>\n\
+    <% icons.each(function(icon) { %><tr>\n\
+        <td class='<%= fontPath %>'><%= icon.get('name') %></td>\n\
+        <td><%= icon.get('name') %></td>\n\
+    </tr><% }); %>\n\
+</table>\n\
+</body>\n\
 </html>"
 ),
 samplePage: function() {

@@ -160,7 +160,7 @@ textarea {
 body {
   margin: 0;
     background: #dfe2e2;
-    font-family: source-sans-pro, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: 'Source Sans Pro', "Helvetica Neue", Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;  font-size: 14px;
   line-height: 20px;
   color: #454545;
@@ -940,7 +940,7 @@ input,
 button,
 select,
 textarea {
-  font-family: source-sans-pro, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: 'Source Sans Pro', "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 label {
@@ -4294,7 +4294,7 @@ input[type="submit"].btn.btn-mini {
 .navbar-search .search-query {
   padding: 4px 14px;
   margin-bottom: 0;
-  font-family: source-sans-pro, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: 'Source Sans Pro', "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 13px;
   font-weight: normal;
   line-height: 1;
@@ -5810,13 +5810,4 @@ a.badge:hover {
   height: 27px;
   line-height: 27px;
   text-shadow: 0 1px 0 #fff;    
-}
-
-
-.icomatic {
-    border: 1px solid #d7d7d7;
-    border-radius: 3px;
-    line-height: 1.5em !important;
-    margin: 0 0 44px;
-    padding: 20px;
 }

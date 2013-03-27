@@ -18,6 +18,12 @@
 body {
     width: 100%;
     height: 100%;
+    font-family: 'Source Sans Pro', Arial, sans-serif;
+    color: #454545;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: #000;
 }
 
 #steplist {
@@ -39,3 +45,98 @@ body {
     color: #000;
     background-color: #e0f0fa;
 }
+
+.icons {
+    list-style: none;
+    margin: 0 0 0 -10px;
+    overflow: hidden;
+    padding: 0;
+}
+
+.icons li {
+    background: #eee;
+    border-radius: 3px;
+    float: left;
+    margin: 0 0 10px 10px;
+    min-width: 6em;
+    padding: 30px;
+    text-align: center;
+}
+
+.icons .icon {
+    font-size: 50px;
+    color: #454545;
+    margin: 0 0 10px;
+    padding-right: 0;
+    text-align: center;
+}
+
+.icon .icon-label {
+    font-size: 1em;
+}
+
+/* DatGUI */
+        
+/*.dg {
+    border-radius: 4px !important;
+    color: #454545 !important;
+    margin-right: 60px;
+    margin-top: 24px;
+    text-shadow: 0 1px 0 #fff !important;
+}
+
+.dg.main {
+    background: #fff;
+    border: 1px solid #d7d7d7;
+    padding: 10px !important;
+}
+
+.dg.a {
+    margin: 0 !important;
+}
+
+.dg .c .slider {
+    background: #eee !important;
+    border-radius: 3px;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    border-top: 1px solid rgba(0,0,0,0.1);
+    float: right !important;
+    margin-right: 6px; 
+}
+
+.dg .c .slider-fg {
+    background: #288edf !important;
+    border-radius: 2px;
+    position: relative;
+    left: 1px;
+}
+
+.dg .c input[type=text] {
+    border-radius: 3px !important;
+    border: 1px solid transparent !important;
+} 
+
+.dg .has-slider input[type=text] {
+    background: #fff !important;
+    border: 1px solid #9c9e9e !important;
+    box-shadow: inset 0 1px 0 rgba(0,0,0,0.1);
+    color: #454545 !important;
+}            
+
+.dg .selector {
+    margin: 26px 0 0 !important;
+}                   
+
+.dg li {
+    border: none !important;
+}
+
+.dg .property-name {
+    box-sizing: border-box;
+    padding-right: 10px;
+    text-align: right;
+}
+
+.close-button {
+    display: none !important;
+}*/

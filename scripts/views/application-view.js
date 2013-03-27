@@ -13,6 +13,7 @@ initialize: function() {
 template: _.template(
 "<div class='row-fluid' style='margin-top:2em'>\
   <div class='span3'>\
+    <h1 id='logo'>Icomatic</h1>\
     <ol id='steplist' class='nav nav-list'>\
         <li class='<% print(state === 'upload' ? 'active' : '') %>'>1. Upload Your Vector Icons</li>\
         <li class='<% print(state === 'preview' ? 'active' : '') %>'>2. Preview Icons</li>\
@@ -33,9 +34,14 @@ uploadTemplate: _.template(
 </div>"
 ),
 exportTemplate: _.template(
-"<p class='<%= fontPath %>' style='font-size: 50px'>\
-  <% icons.each(function(icon) { %> <%= icon.get('name') %> <% }); %>\
-</p>\
+"<ul class='icons'>\
+  <% icons.each(function(icon) { %>\
+    <li>\
+        <div class='<%= fontPath %> icon'><%= icon.get('name') %></div>\
+        <div class='icon-label'><%= icon.get('name') %></div>\
+    </li>\
+  <% }); %>\
+</ul>\
 <button id='button' class='btn'>Download</button>\
 <form id='form' enctype='application/x-www-form-urlencoded' action='http://server.icomatic.io/icon-handler' method='post'>\
   <% _.forEach(inputs, function(input) { %><input type='hidden' name='<%=input.name%>' value='<%-input.value%>'><% });%>\
@@ -54,6 +60,7 @@ SVG font in to us at icomaticsf[at]gmail.com.</p><br/>\
     <img alt='' border='0' src='https://www.paypalobjects.com/en_US/i/scr/pixel.gif' width='1' height='1'>\
 </form>"
 ),
+gui: null,
 render: function() {
     this.el.innerHTML = this.template({ state: this.model.get('state') });
     var result, iconsView,
@@ -114,6 +121,13 @@ render: function() {
         doc.body.appendChild(svg);
         break;
     }
+    // if (!this.gui) {
+    //     this.gui = new dat.GUI();
+    //     var obj = { Color: '#cecece',
+    //                 Size: 20 };
+    //     this.gui.add(obj, 'Size', 10, 100).onChange(function() {});
+    //     this.gui.addColor(obj, 'Color').onChange(function() {});
+    // }
     return this;
 },
 createForm: function(values /*[{ name, value }]*/) {

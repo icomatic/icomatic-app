@@ -90,8 +90,8 @@ loadLocalFiles: function(files /*[{ serverName, destName }]*/) {
 },
 generateFontPackage: function() {
     var result = this.loadLocalFiles([
-        { serverName: 'sample/dat.gui.js', destName: 'js/dat.gui.min.js' },
-        { serverName: 'sample/dat.color.js', destName: 'js/dat.color.min.js' }
+        { serverName: 'sample/dat.gui.js', destName: 'js/dat.gui.js' },
+        { serverName: 'sample/dat.color.js', destName: 'js/dat.color.js' }
         ]);
     result[this.get('fontPath') + '.css'] = this.get('fontStyle');
     result[this.get('fontPath') + '.js'] = this.get('fontScript');

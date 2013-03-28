@@ -53,7 +53,7 @@ purchaseTemplate: _.template(
 <p>Feel free to try out the test SVG font. For our beta testers interested in a full font kit\
 (with .eot, .woff, and .ttf formats), you can use the PayPal link below and then send your\
 SVG font in to us at icomaticsf[at]gmail.com.</p><br/>\
-<form action='https://www.paypal.com/cgi-bin/webscr' method='post' target='_top'>\
+<form action='https://www.paypal.com/cgi-bin/webscr' method='post' target='_top' onsubmit='_gaq.push([\"_trackEvent\", \"PurchaseFont\"])'>\
     <input type='hidden' name='cmd' value='_s-xclick'>\
     <input type='hidden' name='hosted_button_id' value='P2VQH6ZJQ3KSU'>\
     <input type='image' src='http://app.icomatic.io/resources/paypal-btn.gif' border='0' name='submit' alt='PayPal - The safer, easier way to pay online!'>\
@@ -148,10 +148,12 @@ createForm: function(values /*[{ name, value }]*/) {
 clickHandler: function(event) {
     switch(this.model.get('state')) {
         case 'preview':
+            if (_gaq) _gaq.push(['_trackEvent', 'GenerateFont']);
             this.model.generateFont();
             this.model.set('state', 'export');
             break;
         case 'export':
+            if (_gaq) _gaq.push(['_trackEvent', 'DownloadFont']);
             // var form = document.getElementById('form');
             // form.submit();
             this.model.downloadFont();
@@ -160,6 +162,7 @@ clickHandler: function(event) {
     }
 },
 filesPicked: function(event) {
+    _gaq.push(['_trackEvent', 'FileUpload']);
     var files = event.target.files,
         file, i, reader;
     if (files.length < 1)
@@ -176,7 +179,7 @@ filesPicked: function(event) {
             };
         })(file, this.model);
         reader.readAsText(file);
-    }     
+    }
     this.model.set('state', 'preview');
 }
 });

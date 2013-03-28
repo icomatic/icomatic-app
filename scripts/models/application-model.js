@@ -65,71 +65,69 @@ generateFont: function() {
     this.set('fontStyle', stylesheet);
     this.set('fontScript', script);
 },
+loadLocalFile: function(fileName) {
+    var request = new XMLHttpRequest();
+    request.open('GET', fileName, false);
+    request.send();
+    if (request.status === 200)
+        return request.responseText;
+    else
+        console.log('Failed to load file: ' + file.serverName);
+    return '';
+},
+loadLocalFiles: function(files /*[{ serverName, destName }]*/) {
+    var result = {};
+    _.map(files, function(file) {
+        var request = new XMLHttpRequest();
+        request.open('GET', file.serverName, false);
+        request.send();
+        if (request.status === 200)
+            result[file.destName] = request.responseText;
+        else
+            console.log('Failed to load file: ' + file.serverName);
+    });
+    return result;
+},
+generateFontPackage: function() {
+    var result = this.loadLocalFiles([
+        { serverName: 'sample/dat.gui.js', destName: 'js/dat.gui.min.js' },
+        { serverName: 'sample/dat.color.js', destName: 'js/dat.color.min.js' }
+        ]);
+    result[this.get('fontPath') + '.css'] = this.get('fontStyle');
+    result[this.get('fontPath') + '.js'] = this.get('fontScript');
+    result[this.get('fontPath') + '.svg'] = this.get('fontSVG');
+    result['index.html'] = this.samplePage();
+    return result;
+},
 generateFontDataURI: function() {
+    var result = this.generateFontPackage();
     var zip = new JSZip();
-    zip.file('index.html', this.samplePage());
-    zip.file(this.get('fontPath') + '.css', this.get('fontStyle'));
-    zip.file(this.get('fontPath') + '.js', this.get('fontScript'));
-    // var fontPath = this.get('fontPath').split('/');
-    // var folder = zip;
-    // for (var i = 0; i < fontPath.length - 1; i++)
-    //     folder = folder.folder(fontPath[i]);
-    // folder.file(fontPath[fontPath.length - 1], this.get('fontSVG'));
-    zip.file(this.get('fontPath') + '.svg', this.get('fontSVG'));
+    var folders = {};
+    var path, filename;
+    for (var key in result) {
+        path = key.split('/');
+        filename = path.pop();
+        path = path.join('/');
+        if (path.length) {
+            if (!folders.hasOwnProperty(path))
+                folders[path] = zip.folder(path);
+            folder = folders[path];
+        }  else folder = zip;
+        folder.file(filename, result[key]);
+    }
+    // zip.file(key, result[key]);
+    // TODO: deal with folders
     var content = zip.generate();
     return 'data:application/zip;base64,' + content;
 },
-sampleTemplate: _.template(
-"<html>\n\
-<head>\n\
-<link rel='stylesheet' type='text/css' href='<% print(fontPath + '.css') %>' />\n\
-<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700' rel='stylesheet' type='text/css'>\n\
-<link href='http://fonts.googleapis.com/css?family=Source+Code+Pro' rel='stylesheet' type='text/css'>\n\
-<script src='<%= fontPath %>.js'></script>\n\
-<style>\n\
-body {\n\
-  font-family: 'Source Sans Pro', Arial, sans-serif;\n\
-  color: DimGray;\n\
-}\n\
-body code, body pre {\n\
-    background-color: DimGray;\n\
-    color: white;\n\
-    font-family: 'Source Code Pro', monospace;\n\
-}\n\
-.demo {\n\
-    border: 1px solid DimGray;\n\
-    font-size: 1.5em;\n\
-    line-height: 1.5;\n\
-    font-family: '<%= fontFamily %>';\n\
-}\n\
-tr:nth-child(odd) { background-color: DimGray; color: white; }\n\
-tr:nth-child(even) { background-color: white; color: DimGray; }\n\
-</style>\n\
-</head>\n\
-<body>\n\
-<h1>Ligature Icon Font</h1>\n\
-Try typing one of your icon ligatures in the area below.\n\
-eg <% icons.at(0).get('name') %>\n\
-<div contenteditable class='<%= fontPath %> demo'></div>\n\
-<h2>Icon Font Usage</h2>\n\
-Using an icon font is simple. Just include the stylesheet, and the icon class to any text you would like to be replaced with an icon.\n\
-<code><pre>\n\
-&lt;link rel='stylesheet' type='text/css' href='<%= fontPath %>.css'&gt;<br/>\n\
-...<br/>\n\
-&lt;span class='<%= fontPath %>' style='color:blue'&gt;<%= icons.at(0).get('name') %>&lt;/span&gt;<br/>\n\
-</pre></code>\n\
-<h2>Available Icons</h2>\n\
-<table>\n\
-    <% icons.each(function(icon) { %><tr>\n\
-        <td class='<%= fontPath %>'><%= icon.get('name') %></td>\n\
-        <td><%= icon.get('name') %></td>\n\
-    </tr><% }); %>\n\
-</table>\n\
-</body>\n\
-</html>"
-),
+sampleTemplate: null,
 samplePage: function() {
-    var result = this.sampleTemplate({
+    var result;
+    if (!this.sampleTemplate) {
+        result = this.loadLocalFile('sample/sample-template.html');
+        this.sampleTemplate = _.template(result);
+    }
+    result = this.sampleTemplate({
         fontPath: this.get('fontPath'),
         fontFamily: this.get('fontFamily'),
         icons: this.get('icons')

@@ -65,7 +65,7 @@ generateFont: function() {
     this.set('fontStyle', stylesheet);
     this.set('fontScript', script);
 },
-downloadFont: function() {
+generateFontDataURI: function() {
     var zip = new JSZip();
     zip.file('index.html', this.samplePage());
     zip.file(this.get('fontPath') + '.css', this.get('fontStyle'));
@@ -77,7 +77,7 @@ downloadFont: function() {
     // folder.file(fontPath[fontPath.length - 1], this.get('fontSVG'));
     zip.file(this.get('fontPath') + '.svg', this.get('fontSVG'));
     var content = zip.generate();
-    location.href = 'data:application/zip;base64,' + content;
+    return 'data:application/zip;base64,' + content;
 },
 sampleTemplate: _.template(
 "<html>\n\

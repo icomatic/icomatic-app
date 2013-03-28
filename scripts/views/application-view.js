@@ -50,15 +50,17 @@ exportTemplate: _.template(
 previewTemplate: _.template("<button id='button' class='btn btn-large'>Next</button>"),
 purchaseTemplate: _.template(
 "<h2>Thanks for trying us out!</h2>\
+<p>Your download should begin shortly. If not, you can click <a href='#' id='downloadLink'>here</a>.</p>\
 <p>Feel free to try out the test SVG font. For our beta testers interested in a full font kit\
 (with .eot, .woff, and .ttf formats), you can use the PayPal link below and then send your\
 SVG font in to us at icomaticsf[at]gmail.com.</p><br/>\
 <form action='https://www.paypal.com/cgi-bin/webscr' method='post' target='_top' onsubmit='_gaq.push([\"_trackEvent\", \"PurchaseFont\"])'>\
     <input type='hidden' name='cmd' value='_s-xclick'>\
     <input type='hidden' name='hosted_button_id' value='P2VQH6ZJQ3KSU'>\
-    <input type='image' src='http://app.icomatic.io/resources/paypal-btn.gif' border='0' name='submit' alt='PayPal - The safer, easier way to pay online!'>\
+    <input type='image' src='https://www.paypalobjects.com/en_US/i/btn/btn_buynow_LG.gif' border='0' name='submit' alt='PayPal - The safer, easier way to pay online!'>\
     <img alt='' border='0' src='https://www.paypalobjects.com/en_US/i/scr/pixel.gif' width='1' height='1'>\
-</form>"
+</form>\
+<iframe class='visually-hidden' id='downloadFrame'></iframe>"
 ),
 gui: null,
 render: function() {
@@ -76,7 +78,7 @@ render: function() {
         iconsView = new icomatic.Views.IconCollectionView({ collection: this.model.get('icons') });
         div.insertBefore(iconsView.render().el, div.firstChild);
         break;
-    case 'export':
+    case 'download':
         var style = document.createElement('style');
         style.innerText = this.model.get('fontStyle').replace(this.model.get('fontPath') + '.svg', '');
         document.querySelector('head').appendChild(style);
@@ -100,6 +102,14 @@ render: function() {
     case 'purchase':
         result = this.purchaseTemplate({});
         div.innerHTML = result;
+        result = this.model.generateFontDataURI();
+        window.setTimeout(function() {
+            var el = document.getElementById('downloadFrame');
+            el.setAttribute('src', result);
+        }, 2500);
+        document.getElementById('downloadLink').onclick = function() {
+            location.href = result;
+        };
         break;
     case 'sample':
         var iframe = document.createElement('iframe');
@@ -150,13 +160,13 @@ clickHandler: function(event) {
         case 'preview':
             if (_gaq) _gaq.push(['_trackEvent', 'GenerateFont']);
             this.model.generateFont();
-            this.model.set('state', 'export');
+            this.model.set('state', 'download');
             break;
-        case 'export':
+        case 'download':
             if (_gaq) _gaq.push(['_trackEvent', 'DownloadFont']);
             // var form = document.getElementById('form');
             // form.submit();
-            this.model.downloadFont();
+            // this.model.downloadFont();
             this.model.set('state', 'purchase');
             break;
     }

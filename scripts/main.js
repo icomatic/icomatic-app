@@ -33,15 +33,16 @@ $(document).ready(function(){
   application.addIcon('dummy2', "<svg width='100%' height='100%' viewBox='0 0 100 100'><path fill='#ccc' d='M0,0h100v100z'/></svg>");
   application.addIcon('dummy3', "<svg width='100%' height='100%' viewBox='0 0 100 100'><path fill='#ccc' d='M0,0h100v100z'/></svg>");
   
+  application.generateFont();
+
   switch (debug) {
-    case 'upload': break;
+    case 'upload':
     case 'preview':
-      application.set('state', 'preview'); break;
     case 'download':
-      application.generateFont(); application.set('state', 'export'); break;
     case 'purchase':
-      application.set('state', 'purchase'); break;
+    case 'sample':
+      application.set('state', debug);
     default:
-      application.generateFont(); application.set('state', 'sample'); break;
+      break;
   }
 });

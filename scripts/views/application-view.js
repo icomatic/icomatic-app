@@ -17,7 +17,7 @@ template: _.template(
     <ol id='steplist' class='nav nav-list'>\
         <li class='<% print(state === 'upload' ? 'active' : '') %>'>1. Upload Your Vector Icons</li>\
         <li class='<% print(state === 'preview' ? 'active' : '') %>'>2. Preview Icons</li>\
-        <li class='<% print(state === 'export' ? 'active' : '') %>'>3. Download Your Icon Font</li>\
+        <li class='<% print(state === 'download' ? 'active' : '') %>'>3. Download Your Icon Font</li>\
         <li class='<% print(state === 'purchase' ? 'active' : '') %>'>4. Purchase It</li>\
     </ol>\
   </div>\

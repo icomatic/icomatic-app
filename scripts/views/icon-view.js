@@ -1,12 +1,12 @@
 icomatic.Views.IconView = Backbone.View.extend({
 template: _.template(
-'<div class=\'square thumbnail\'>\
+'<div class=\'icon\'>\
   <%= svg %>\
 </div>\
-<p><%= name %></p>'
+<div class=\'icon-label\'><%= name %></div>'
 ),
 tagName: 'li',
-className: 'span2',
+className: '',
 render: function() {
     var result = this.template({ svg: this.model.get('svg'), name: this.model.get('name') });
     this.el.innerHTML = result;

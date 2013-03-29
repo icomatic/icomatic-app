@@ -1,6 +1,6 @@
 icomatic.Views.IconCollectionView = Backbone.View.extend({
     tagName: 'ul',
-    className: 'thumbnails',
+    className: 'icons',
     initialize: function() {
         this.collection.on('add', this.render, this);
     },

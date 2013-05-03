@@ -14,7 +14,8 @@ defaults: {
     fontSVG: null,
     fontStyle: null,
     fontScript: null,
-    altClass: 'icomatic-alt'
+    altClass: 'icomatic-alt',
+    serverId: 'missing'
 },
 initialize: function() {
     this.set('icons', new icomatic.Collections.IconCollection([]));
@@ -162,5 +163,30 @@ addIcon: function(fileName, svgContent) {
         this.set('icons', new icomatic.Collections.IconCollection(iconModel));
     else
         icons.push(iconModel);
+},
+encode: function(data) {
+    var result = [];
+    for (var prop in data) {
+        result.push(prop + '=' + encodeURIComponent(data[prop]));
+    }
+    return result.join('&');
+},
+prepareDownload: function() {
+    var data = {
+        'path': this.get('fontPath'),
+        'style': this.get('fontStyle'),
+        'font': this.get('fontSVG'),
+        'script': this.get('fontScript'),
+        'sample': this.samplePage()
+    };
+    var request = new XMLHttpRequest();
+    var model = this;
+    request.onload = function() {
+        model.set('serverId', request.responseXML.querySelector('id').firstChild.nodeValue);
+        model.set('state', 'purchase');
+    }
+    request.open('post', 'http://server.icomatic.io/icon-handler');
+    request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    request.send(this.encode(data));
 }
 });

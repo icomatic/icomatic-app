@@ -57,6 +57,8 @@ SVG font in to us at icomaticsf[at]gmail.com.</p><br/>\
 <form action='https://www.paypal.com/cgi-bin/webscr' method='post' target='_top' onsubmit='_gaq.push([\"_trackEvent\", \"PurchaseFont\"])'>\
     <input type='hidden' name='cmd' value='_s-xclick'>\
     <input type='hidden' name='hosted_button_id' value='P2VQH6ZJQ3KSU'>\
+    <input type='hidden' name='custom' value='<%= id %>'>\
+    <input type='hidden' name='return' value='http://server.icomatic.io/<%= id %>'>\
     <input type='image' src='https://www.paypalobjects.com/en_US/i/btn/btn_buynow_LG.gif' border='0' name='submit' alt='PayPal - The safer, easier way to pay online!'>\
     <img alt='' border='0' src='https://www.paypalobjects.com/en_US/i/scr/pixel.gif' width='1' height='1'>\
 </form>\
@@ -100,7 +102,9 @@ render: function() {
         div.innerHTML= result;
         break;
     case 'purchase':
-        result = this.purchaseTemplate({});
+        result = this.purchaseTemplate({
+            id: this.model.get('serverId')
+        });
         div.innerHTML = result;
         result = this.model.generateFontDataURI();
         window.setTimeout(function() {
@@ -167,7 +171,7 @@ clickHandler: function(event) {
             // var form = document.getElementById('form');
             // form.submit();
             // this.model.downloadFont();
-            this.model.set('state', 'purchase');
+            this.model.prepareDownload();
             break;
     }
 },

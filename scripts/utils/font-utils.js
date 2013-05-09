@@ -83,7 +83,11 @@ createGlyph: function(glyphData) {
 createStylesheet: function(fontData, styleData) {
     return '@font-face {\n\
     font-family: \'' + fontData.fontFamily + '\';\n\
-    src: url(\'' + fontData.fontPath + '.svg#' + fontData.fontId + '\') format(\'svg\');\n\
+    src: url(\'' + fontData.fontPath + '.eot\');\n\
+    src: url(\'' + fontData.fontPath + '.eot?#iefix\') format("embedded-opentype"),\n\
+         url(\'' + fontData.fontPath + '.woff\') format("woff"),\n\
+         url(\'' + fontData.fontPath + '.ttf\') format("truetype"),\n\
+         url(\'' + fontData.fontPath + '.svg#' + fontData.fontId + '\') format(\'svg\');\n\
     }\n\
     .' + styleData.fontClass + ' {\n\
     font-family: \'' + fontData.fontFamily + '\',\'sans-serif\';\n\

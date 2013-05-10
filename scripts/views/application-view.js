@@ -168,10 +168,8 @@ clickHandler: function(event) {
             break;
         case 'download':
             if (_gaq) _gaq.push(['_trackEvent', 'DownloadFont']);
-            // var form = document.getElementById('form');
-            // form.submit();
-            // this.model.downloadFont();
-            this.model.prepareDownload();
+            this.model.set('state', 'purchase');
+            // this.model.prepareDownload();
             break;
     }
 },
